@@ -23,5 +23,6 @@ urlpatterns = [
     path('charts/', include('apps.charts.urls')),
     path("admin/", admin.site.urls),
     path("", include('admin_soft.urls')),
-    path('users/', include('users.urls'))
+    path('users/', include('users.urls')),
+    path('user/', include('users.urls'))
 ]

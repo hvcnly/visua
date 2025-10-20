@@ -1,0 +1,460 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up</title>
+
+    <style>
+        *,
+*:before,
+*:after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    background-image: url("{% static 'users/fotos/nike4.webp' %}");
+    background-size: cover;       /* la imagen cubre toda la ventana */
+    background-position: center;  /* centra la imagen */
+    background-repeat: no-repeat; /* no se repite */
+    background-attachment: fixed; /* para que la imagen quede fija al hacer scroll */
+    display: flex;
+    justify-content: center; /* centra horizontalmente */
+    align-items: center;     /* centra verticalmente */
+    height: 100vh;           /* altura de toda la ventana */
+    margin: 0;
+}
+
+input,
+button {
+    border: none;
+    outline: none;
+    background: none;
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+}
+
+.tip {
+    font-size: 20px;
+    margin: 40px auto 50px;
+    text-align: center;
+}
+
+.cont {
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    width: 900px;
+    height: 450px;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 
+        0 0 20px rgba(255, 0, 0, 0.5),   /* sombra externa roja suave alrededor */
+        0 0 40px rgba(255, 0, 0, 0.3);   /* sombra más difusa */
+    display: flex;
+    flex-direction: row;
+}
+
+
+.form {
+    position: relative;
+    width: 640px;
+    height: 100%;
+    -webkit-transition: -webkit-transform 1.2s ease-in-out;
+    transition: -webkit-transform 1.2s ease-in-out;
+    transition: transform 1.2s ease-in-out;
+    transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out;
+    padding: 50px 30px 0;
+}
+
+.sub-cont {
+    overflow: hidden;
+    position: absolute;
+    left: 640px;
+    top: 0;
+    width: 900px;
+    height: 100%;
+    padding-left: 260px;
+    background: #660b0b;
+    -webkit-transition: -webkit-transform 1.2s ease-in-out;
+    transition: -webkit-transform 1.2s ease-in-out;
+    transition: transform 1.2s ease-in-out;
+    transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out;
+}
+
+.cont.s--signup .sub-cont {
+    -webkit-transform: translate3d(-640px, 0, 0);
+    transform: translate3d(-640px, 0, 0);
+}
+
+button {
+    display: block;
+    margin: 0 auto;
+    width: 260px;
+    height: 36px;
+    border-radius: 30px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.img {
+    overflow: hidden;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100%;
+    padding-top: 360px;
+}
+
+.img:before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 900px;
+    height: 100%;
+    
+    opacity: 1;
+    background-size: cover;
+    transition: transform 1.2s ease-in-out, background-color 1.2s ease-in-out;
+}
+
+.img:after {
+    background: rgba(0,0,0,0.8); /* oscurece con opacidad */
+}
+
+
+/* Barra lateral después del slide: negra */
+.cont.s--signup .img:before {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.img__text {
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 100%;
+    padding: 0 20px;
+    text-align: center;
+    color: #fff;
+    -webkit-transition: -webkit-transform 1.2s ease-in-out;
+    transition: -webkit-transform 1.2s ease-in-out;
+    transition: transform 1.2s ease-in-out;
+    transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out;
+}
+
+.img__text h2 {
+    margin-bottom: 10px;
+    font-weight: normal;
+    color: #fff;
+}
+
+.img__text p {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.cont.s--signup .img__text.m--up {
+    -webkit-transform: translateX(520px);
+    transform: translateX(520px);
+}
+
+.img__text.m--in {
+    -webkit-transform: translateX(-520px);
+    transform: translateX(-520px);
+}
+
+.cont.s--signup .img__text.m--in {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}
+
+.img__btn { 
+    overflow: hidden;
+    z-index: 2;
+    position: relative;
+    width: 140px;       /* más ancho */
+    height: 45px;       /* más alto */
+    margin: 0 auto;
+    background: transparent;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 30px;
+}
+
+.img__btn:after {
+    content: '';
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #fff;
+    border-radius: 30px;
+}
+
+.img__btn span {
+    position: absolute;      /* volver a absolute para animación */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s ease;
+}
+
+.img__btn span.m--in {
+    transform: translateY(-72px);
+}
+
+.cont.s--signup .img__btn span.m--in {
+    transform: translateY(0);
+}
+
+.cont.s--signup .img__btn span.m--up {
+    transform: translateY(72px);
+}
+
+
+h2 {
+    width: 100%;
+    font-size: 26px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    width: 260px;
+    margin: 25px auto 0;
+    text-align: center;
+}
+
+label span {
+    font-size: 12px;
+    color: #660b0b;
+    text-transform: uppercase;
+}
+
+input {
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.forgot-pass {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 12px;
+    color: #cfcfcf;
+}
+
+.submit {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    background: #660b0b;
+    text-transform: uppercase;
+}
+
+.fb-btn {
+    border: 2px solid #660b0b;
+    color: #fff;
+}
+
+.fb-btn span {
+    font-weight: bold;
+    color: #fff;
+}
+
+.sign-in {
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+.sign-in .submit:hover {
+    background-color: #660b0b; /* rojo Nike al hover */
+    color: #000000;
+    transform: scale(1.05);
+}
+
+.sign-in input {
+    background-color: #fff !important; /* fondo blanco */
+    color: #000 !important;            /* texto negro visible */
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sign-in input:focus {
+    background-color: #fff;  /* se llena al escribir */
+}
+
+.cont.s--signup .sign-in {
+    -webkit-transition-timing-function: ease-in-out;
+    transition-timing-function: ease-in-out;
+    -webkit-transition-duration: 1.2s;
+    transition-duration: 1.2s;
+    -webkit-transform: translate3d(640px, 0, 0);
+    transform: translate3d(640px, 0, 0);
+}
+
+.sign-up {
+    -webkit-transform: translate3d(-900px, 0, 0);
+    transform: translate3d(-900px, 0, 0);
+}
+
+.sign-up input {
+    background-color: #fff;
+    color: #000;
+    border-bottom: 1px solid rgba(0,0,0,0.4); /* mantiene la línea */
+}
+
+/* Botón de registrarse en el formulario */
+.sign-up .submit {
+    background-color: #000;  /* fondo negro */
+    color: #fff;             /* texto blanco */
+    border-radius: 30px;     /* bordes redondeados */
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cont.s--signup .sign-up {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+
+/* Campos de texto del formulario Sign-Up */
+.sign-up input {
+    background-color: #fff !important; /* fondo blanco */
+    color: #000 !important;            /* texto negro visible */
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Efecto al hacer focus en los campos */
+.sign-up input:focus {
+    outline: none;
+    border-bottom: 2px solid #d4af7a; /* línea dorada al enfocar */
+    color: #000 !important;            /* asegura que el texto sigue negro */
+}
+
+/* Efecto al pasar el mouse */
+.sign-up .submit:hover {
+    background-color: #000;  /* cambia a rojo Nike */
+    color: #660b0b;                /* texto negro */
+    transform: scale(1.05);     /* crece un poquito */
+}
+
+.cont h2,
+.cont label span,
+.cont input,
+.cont .forgot-pass {
+    color: #fff; /* letras blancas */
+}
+
+.distribuidor-text {
+    text-align: center;
+    margin-top: 15px;
+    color: #fff; /* blanco para que resalte sobre el fondo negro */
+    font-size: 14px;
+}
+
+.distribuidor-text a {
+    color: #660b0b; /* rojo brillante tipo Nike */
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.distribuidor-text a:hover {
+    color: #fff; /* efecto al pasar el mouse */
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="cont">
+        <div class="form sign-in">
+            <h2>Bienvenido de vuelta!</h2>
+            <label>
+                <span>Correo</span>
+                <input type="email" />
+            </label>
+            <label>
+                <span>Contraseña</span>
+                <input type="password" />
+            </label>
+            <p class="forgot-pass">Olvidaste tu contraseña?</p>
+            <button type="button" class="submit">Iniciar Sesión</button>
+
+            <!-- TEXTO DE DISTRIBUIDOR DENTRO DEL FORM -->
+            <p class="distribuidor-text">
+                ¿Eres distribuidor? Haz click <a href="http://127.0.0.1:8000/admin">aquí</a>
+            </p>
+        </div>
+
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h3>No tienes una cuenta? Regístrate!</h3>
+                </div>
+                <div class="img__text m--in">
+                    <h3>Si ya tienes una cuenta, inicia sesión.</h3>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">Regístrate</span>
+                    <span class="m--in">Iniciar sesión</span>
+                </div>
+            </div>
+            <div class="form sign-up">
+                <h2>Crear una cuenta</h2>
+                <label>
+                    <span>Nombre</span>
+                    <input type="text" />
+                </label>
+                <label>
+                    <span>Correo</span>
+                    <input type="email" />
+                </label>
+                <label>
+                    <span>Contraseña</span>
+                    <input type="password" />
+                </label>
+                <button type="button" class="submit">Registrarse</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.img__btn').addEventListener('click', function() {
+            document.querySelector('.cont').classList.toggle('s--signup');
+        });
+    </script>
+</body>
+</html>
