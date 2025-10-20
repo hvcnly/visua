@@ -1,0 +1,426 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Shop</title>
+<style>
+/* ===== Global Styles ===== */
+body {
+    margin:0;
+    font-family:'Oswald', sans-serif;
+    background:#111;
+    color:#fff;
+}
+a { text-decoration:none; color:#fff; transition:0.3s; }
+a:hover { color:#f00; }
+.container { width:90%; max-width:1200px; margin:0 auto; }
+
+/* ===== Header ===== */
+header {
+    background:#000000;
+    display:flex;
+    justify-content:center; /* centramos horizontalmente */
+    align-items:center;      /* misma altura que antes */
+    padding:20px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.5);
+    top:0;
+    z-index:1000;
+    header .logo {
+    height: auto;
+    margin-bottom: 10px;
+    width: 100px;   /* ajusta al tamaño que quieras */
+    max-width: 20%; /* opcional: no se pase del 20% del contenedor */
+    display: block;
+}
+
+}
+
+header .container {
+    display:flex;
+    flex-direction:column;   /* apila título y menú */
+    align-items:center;
+}
+
+header h1 {
+    color:#f00;
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+header nav {
+    display:flex;
+    gap:25px; /* espacio entre las palabras */
+}
+
+header nav a {
+    font-weight:bold;
+    color:#fff;
+    transition:0.3s;
+}
+
+header nav a:hover {
+    color:#ff4d4d;
+}
+
+.header-right-icons {
+    position: absolute;   
+    top: 10px;            
+    right: 20px;          
+    display: flex;
+    gap: 15px;            
+}
+
+/* tamaño individual de los íconos */
+.icon-btn img.user-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.icon-btn img.heart-icon {
+    width: 15px;   /* un poquito más grande */
+    height: 15px;
+}
+
+.icon-btn img.cart-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+
+
+header h1 { color:#f00; font-size:28px; }
+header nav a { margin-left:25px; font-weight:bold; }
+header nav a:hover { color:#ff4d4d; }
+
+.logo {
+    width: 100px;        /* tamaño inicial del logo */
+    max-width: 15%;      /* no se pase del 15% del contenedor */
+    height: auto;        /* mantiene proporción */
+    display: block;      /* evita que flote y cause problemas */
+    margin: 20px auto;   /* lo centra horizontalmente y separa un poco del borde */
+}
+
+@media (max-width: 768px) {
+    .logo {
+        width: 80px;     /* más pequeño en pantallas chicas */
+        max-width: 25%;  /* no se expanda demasiado */
+    }
+}
+/* ===== Hero ===== */
+.hero {
+    height:500px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background-image:url('https://images.unsplash.com/photo-1600180758895-162b0e750a11?auto=format&fit=crop&w=1400&q=80');
+    background-size:cover;
+    background-position:center;
+    position:relative;
+    overflow:hidden;
+}
+
+.fotos-jordan {
+    display: flex;               /* mantiene las fotos en línea horizontal */
+    justify-content: space-around;
+    align-items: flex-end;       /* opcional, alinea la parte inferior */
+    margin-top: 20px;
+    gap: 20px;                   /* espacio entre fotos */
+    flex-wrap: wrap;             /* opcional: permite que baje a la siguiente línea si la pantalla es pequeña */
+}
+
+.foto-wrapper {
+    width: 30%;
+    height: 700px;  /* antes era 500px, ahora más alto */
+    overflow: hidden;
+    border-radius: 10px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+
+.foto-jordan {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* rellena el contenedor */
+    object-position: bottom; /* muestra la parte inferior de la imagen */
+    display: block;
+    transition: transform 0.3s;
+}
+
+.foto-jordan:hover {
+    transform: scale(1.05);
+}
+
+.foto-texto {
+    position: absolute;
+    bottom: 10px;        /* distancia desde el borde inferior */
+    left: 50%;           
+    transform: translateX(-50%); /* centra horizontalmente */
+    color: #fff;         /* color del texto */
+    padding: 5px 10px;
+    border-radius: 5px;  /* opcional */
+    font-size: 16px;     /* ajusta según prefieras */
+    text-align: center;
+}
+
+.hero::after {
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.5);
+}
+.hero div { position:relative; z-index:1; }
+.hero h2 {
+    font-size:48px;
+    color:#fff;
+    margin-bottom:15px;
+    animation:fadeInDown 1s ease forwards;
+}
+.hero p {
+    font-size:18px;
+    margin-bottom:20px;
+    animation:fadeInUp 1s ease forwards;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInDown {
+    0% { opacity:0; transform:translateY(-50px); }
+    100% { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeInUp {
+    0% { opacity:0; transform:translateY(50px); }
+    100% { opacity:1; transform:translateY(0); }
+}
+
+/* ===== Productos ===== */
+.products {
+    padding:60px 0;
+    text-align:center;
+}
+.products h2 { font-size:36px; margin-bottom:50px; position:relative; display:inline-block; }
+.products h2::after {
+    content:"";
+    width:50px;
+    height:3px;
+    background:#f00;
+    display:block;
+    margin:10px auto 0;
+    border-radius:2px;
+}
+
+.cards {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+    gap:30px;
+    padding:0 20px;
+}
+
+.card {
+    background:#222;
+    border-radius:15px;
+    overflow:hidden;
+    transition: transform 0.4s, box-shadow 0.4s;
+    position:relative;
+}
+.card:hover {
+    transform:translateY(-10px);
+    box-shadow:0 15px 25px rgba(255,0,0,0.5);
+}
+.card img {
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    transition: transform 0.5s;
+}
+.card:hover img { transform:scale(1.1); }
+.card h3 { margin:15px 0; font-size:20px; }
+.card p { color:#f00; font-weight:bold; margin-bottom:15px; font-size:18px; }
+.card .btn {
+    display:inline-block;
+    padding:12px 25px;
+    background:linear-gradient(45deg,#f00,#ff4d4d);
+    color:#fff;
+    border-radius:30px;
+    font-weight:bold;
+    transition:0.4s;
+}
+.card .btn:hover {
+    background:linear-gradient(45deg,#fff,#ddd);
+    color:#f00;
+}
+
+/* ===== About ===== */
+.about {
+    padding:60px 20px;
+    background:#1c1c1c;
+    text-align:center;
+}
+.about h2 { font-size:36px; margin-bottom:25px; }
+.about p { max-width:800px; margin:0 auto; line-height:1.7; font-size:18px; }
+
+/* ===== FAQ ===== */
+.faq { padding:60px 20px; text-align:center; }
+.faq h2 { font-size:36px; margin-bottom:40px; }
+.faq-item {
+    background:#222;
+    padding:25px;
+    margin:15px auto;
+    max-width:800px;
+    border-radius:15px;
+    text-align:left;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.faq-item:hover {
+    transform:translateY(-5px);
+    box-shadow:0 10px 20px rgba(255,0,0,0.5);
+}
+
+/* ===== Contact ===== */
+.contact { padding:60px 20px; background:#1c1c1c; text-align:center; }
+.contact h2 { font-size:36px; margin-bottom:25px; }
+.contact form { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+.contact input, .contact textarea {
+    padding:12px; border:none; border-radius:10px;
+    font-size:16px;
+}
+.contact button {
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    background:linear-gradient(45deg,#f00,#ff4d4d);
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.4s;
+}
+.contact button:hover { background:linear-gradient(45deg,#fff,#ddd); color:#f00; }
+
+/* ===== Footer ===== */
+footer {
+    background:#1c1c1c;
+    text-align:center;
+    padding:25px;
+    box-shadow:0 -2px 5px rgba(0,0,0,0.5);
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+
+<header>
+    <div class="container">
+        <img src="{% static 'users/fotos/jordan.jpg' %}" alt="logo" class="logo">
+        <nav>
+            <a href="#">Lanzamientos</a>
+            <a href="#productos">Hombre</a>
+            <a href="#productos">Mujer</a>
+            <a href="#productos">Niños</a>
+            <a href="#productos">Accesorios</a>
+        </nav>
+    <div class="header-right-icons">
+        <button class="icon-btn">
+            <img src="{% static 'users/icons/1.jpg' %}" alt="Login" class="user-icon">
+        </button>
+        <button class="icon-btn">
+            <img src="{% static 'users/icons/2.jpg' %}" alt="Lista de deseos" class="heart-icon">
+        </button>
+        <button class="icon-btn">
+            <img src="{% static 'users/icons/4.jpg' %}" alt="Carrito" class="cart-icon">
+        </button>
+</div>
+
+
+</header>
+
+<!-- Hero -->
+<div class="fotos-jordan">
+    <div class="foto-wrapper">
+        <img src="{% static 'users/fotos/nike5.webp' %}" alt="Nike 1" class="foto-jordan">
+        <div class="foto-texto">Hombre</div>
+    </div>
+    <div class="foto-wrapper">
+        <img src="{% static 'users/fotos/nike6.webp' %}" alt="Nike 2" class="foto-jordan">
+        <div class="foto-texto">Mujer</div>
+    </div>
+    <div class="foto-wrapper">
+        <img src="{% static 'users/fotos/nike7.webp' %}" alt="Nike 3" class="foto-jordan">
+        <div class="foto-texto">Niños</div>
+    </div>
+</div>
+
+
+
+<!-- Productos -->
+<section id="productos" class="products">
+    <h2>Nuestros Productos</h2>
+    <div class="cards">
+        <div class="card">
+            <img src="{% static 'users/fotos/jordan1.jpeg' %}" alt="Jordan 1">
+            <h3>Air Jordan 1</h3>
+            <p>$200</p>
+            <a href="#" class="btn">Comprar</a>
+        </div>
+        <div class="card">
+            <img src="{% static 'users/fotos/jordan1.jpeg' %}" alt="Jordan 2">
+            <h3>Air Jordan 4</h3>
+            <p>$220</p>
+            <a href="#" class="btn">Comprar</a>
+        </div>
+        <div class="card">
+            <img src="{% static 'users/fotos/jordan1.jpeg' %}" alt="Jordan 3">
+            <h3>Air Jordan 11</h3>
+            <p>$250</p>
+            <a href="#" class="btn">Comprar</a>
+        </div>
+    </div>
+</section>
+
+<!-- About -->
+<section class="about">
+    <h2>Sobre Jordan Shop</h2>
+    <p>Jordan Shop ofrece las zapatillas más icónicas de la marca, con envío a todo el mundo y colecciones exclusivas para los verdaderos fanáticos.</p>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+    <h2>Preguntas Frecuentes</h2>
+    <div class="faq-item">
+        <h3>¿Hacen envíos internacionales?</h3>
+        <p>Sí, realizamos envíos con seguimiento a cualquier parte del mundo.</p>
+    </div>
+    <div class="faq-item">
+        <h3>¿Se aceptan devoluciones?</h3>
+        <p>Se aceptan devoluciones dentro de los 15 días posteriores a la compra.</p>
+    </div>
+</section>
+
+<!-- Contact -->
+<section id="contacto" class="contact">
+    <h2>Contacto</h2>
+    <form>
+        <input type="text" placeholder="Nombre" required>
+        <input type="email" placeholder="Correo" required>
+        <textarea placeholder="Mensaje"></textarea>
+        <button type="submit">Enviar</button>
+    </form>
+</section>
+
+<!-- Footer -->
+<footer>
+    &copy; 2025 Jordan Shop. Todos los derechos reservados.
+</footer>
+
+</body>
+</html>
