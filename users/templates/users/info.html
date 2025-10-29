@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Usuario</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #fff;
+            color: #111;
+            margin: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            border-bottom: 1px solid #eee;
+        }
+
+        header img {
+            height: 35px;
+        }
+
+        header a {
+            color: #111;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid #111;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        header a:hover {
+            background-color: #111;
+            color: #fff;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 30px;
+        }
+
+        .card {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #111;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: #444;
+        }
+
+        .chart-container {
+            text-align: center;
+        }
+
+        .chart-container img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        footer {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            padding: 30px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike Logo">
+        <a href="{% url 'login' %}">Cerrar sesión</a>
+    </header>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3>👟 Hola, {{ user.username }}</h3>
+            <p>Bienvenido a tu panel Nike. Explora tus estadísticas, ubicación de tiendas y estadísticas.</p>
+        </div>
+
+        <div class="card">
+            <h3>📦 Total de pedidos</h3>
+            <p><strong>{{ stats.total_pedidos }}</strong> órdenes completadas</p>
+            <p>“Just do it.” Tu historial demuestra compromiso con el deporte.</p>
+        </div>
+
+        <div class="card">
+            <h3>⭐ Favoritos</h3>
+            <p>{{ stats.productos_favoritos }} productos guardados</p>
+            <p>Tus preferencias ayudan a personalizar tu experiencia.</p>
+        </div>
+
+        <div class="card">
+            <h3>🥇 Membresía</h3>
+            <p>Estás en nivel <strong>{{ stats.nivel_membresia }}</strong></p>
+            <p>Accede a beneficios exclusivos en lanzamientos y descuentos.</p>
+        </div>
+
+        <div class="card chart-container">
+            <h3>📊 Stock por tienda</h3>
+            <img src="data:image/png;base64,{{ grafico_stock }}" alt="Gráfico de stock">
+        </div>
+
+        <div class="card chart-container">
+            <h3>🗺️ Mapa de tiendas Nike Santiago</h3>
+            <img src="data:image/png;base64,{{ mapa }}" alt="Mapa Santiago Nike">
+        </div>
+    </div>
+
+    <footer>
+        © 2025 Nike Jordan Dashboard
+    </footer>
+</body>
+</html>
