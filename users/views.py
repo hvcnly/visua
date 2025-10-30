@@ -5,20 +5,24 @@ import matplotlib.pyplot as plt
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
-
+from django.contrib import messages
 
 def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             auth_login(request, user)
-            return redirect('/users/info/') 
+            return redirect('info')  # redirige a /users/info
         else:
-            error = "Usuario o contraseña incorrectos"
-            return render(request, 'users/login.html', {'error': error})
+            messages.error(request, 'Usuario o contraseña incorrectos')
+
     return render(request, 'users/login.html')
+
+
 
 def shop(request):
     return render(request, 'users/shop.html')

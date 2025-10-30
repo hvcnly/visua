@@ -181,7 +181,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/users/info/'
+LOGOUT_REDIRECT_URL = '/users/login/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ### DYNAMIC_DATATB Settings ###

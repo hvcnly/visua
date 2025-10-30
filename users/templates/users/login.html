@@ -402,16 +402,20 @@ input {
     <div class="cont">
         <div class="form sign-in">
             <h2>Bienvenido de vuelta!</h2>
+            <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
             <label>
-                <span>Correo</span>
-                <input type="email" />
+                <span>Usuario</span>
+                <input type="text" name="username" required />
             </label>
             <label>
                 <span>Contraseña</span>
-                <input type="password" />
+                <input type="password" name="password" required />
             </label>
-            <p class="forgot-pass">Olvidaste tu contraseña?</p>
-            <button type="button" class="submit">Iniciar Sesión</button>
+            <p class="forgot-pass">¿Olvidaste tu contraseña?</p>
+            <button type="submit" class="submit">Iniciar Sesión</button>
+        </form>
+
 
             <!-- TEXTO DE DISTRIBUIDOR DENTRO DEL FORM -->
             <p class="distribuidor-text">
@@ -454,10 +458,6 @@ input {
     <script>
         document.querySelector('.img__btn').addEventListener('click', function() {
         document.querySelector('.cont').classList.toggle('s--signup');
-    });
-
-        document.querySelector('.sign-in .submit').addEventListener('click', function() {
-        window.location.href = '/users/info';
     });
     </script>
 </body>
