@@ -1,7 +1,5 @@
-import io
-import base64
 import random
-import matplotlib.pyplot as plt
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
@@ -16,13 +14,11 @@ def login(request):
 
         if user is not None:
             auth_login(request, user)
-            return redirect('info')  # redirige a /users/info
+            return redirect('info')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos')
 
     return render(request, 'users/login.html')
-
-
 
 def shop(request):
     return render(request, 'users/shop.html')
@@ -31,55 +27,60 @@ def shop(request):
 def info(request):
     user = request.user
 
+    # Datos para el historial de compras
+    historial_compras = [
+        {'producto': 'Air Jordan 1 Retro High', 'fecha': '15/10/2024', 'estado': 'Entregado', 'precio': 149990},
+        {'producto': 'Nike Sportswear Hoodie', 'fecha': '02/10/2024', 'estado': 'Entregado', 'precio': 49990},
+        {'producto': 'Nike Dri-FIT Running', 'fecha': '25/09/2024', 'estado': 'Entregado', 'precio': 29990},
+        {'producto': 'Jordan Series ES', 'fecha': '18/09/2024', 'estado': 'Entregado', 'precio': 89990},
+    ]
+
     stats = {
-        'total_pedidos': random.randint(5, 20),
         'productos_favoritos': random.randint(5, 30),
         'nivel_membresia': random.choice(['Bronze', 'Silver', 'Gold', 'Platinum']),
-        'tiendas_top': [
-            {'nombre': 'Nike Costanera', 'stock': random.randint(150, 400)},
-            {'nombre': 'Nike Parque Arauco', 'stock': random.randint(150, 400)},
-            {'nombre': 'Nike Plaza Egaña', 'stock': random.randint(150, 400)},
-            {'nombre': 'Nike Mall Vivo Los Trapenses', 'stock': random.randint(150, 400)},
-            {'nombre': 'Nike Mall Florida Center', 'stock': random.randint(150, 400)},
-        ]
+        'historial_compras': historial_compras,
+        'total_compras': len(historial_compras),
+        'gasto_total': sum(compra['precio'] for compra in historial_compras)
     }
-
-    tiendas = stats['tiendas_top']
-    nombres = [t['nombre'] for t in tiendas]
-    stocks = [t['stock'] for t in tiendas]
-    x = [random.uniform(-70.7, -70.5) for _ in tiendas]  
-    y = [random.uniform(-33.6, -33.3) for _ in tiendas] 
-
-    plt.figure(figsize=(6, 5))
-    plt.scatter(x, y, s=[s*0.3 for s in stocks], c='red', alpha=0.6)
-    for i, nombre in enumerate(nombres):
-        plt.text(x[i]+0.005, y[i]+0.005, nombre, fontsize=8)
-    plt.title("🗺️ Tiendas Nike Santiago - Stock simulado", fontsize=12)
-    plt.xlabel("Longitud")
-    plt.ylabel("Latitud")
-    plt.grid(True, linestyle='--', alpha=0.3)
-
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight')
-    buffer.seek(0)
-    mapa_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    plt.close()
-
-    plt.figure(figsize=(6, 3))
-    plt.bar(nombres, stocks, color='black')
-    plt.title("Stock total por tienda", fontsize=12)
-    plt.xticks(rotation=30, ha='right')
-    plt.grid(axis='y', linestyle='--', alpha=0.3)
-
-    buffer2 = io.BytesIO()
-    plt.savefig(buffer2, format='png', bbox_inches='tight')
-    buffer2.seek(0)
-    grafico_stock = base64.b64encode(buffer2.getvalue()).decode('utf-8')
-    plt.close()
 
     return render(request, 'users/info.html', {
         'user': user,
         'stats': stats,
-        'mapa': mapa_base64,
-        'grafico_stock': grafico_stock,
+    })
+
+@login_required
+def estadisticas_stock(request):
+    # Datos para el gráfico de distribución de stock (Doughnut)
+    tiendas = [
+        'Nike Costanera', 
+        'Nike Parque Arauco', 
+        'Nike Plaza Egaña', 
+        'Nike Mall Vivo Los Trapenses', 
+        'Nike Mall Florida Center'
+    ]
+    
+    # Generar stocks y encontrar el máximo
+    stocks = [random.randint(150, 400) for _ in tiendas]
+    max_stock_index = stocks.index(max(stocks))
+    
+    stock_data = {
+        'labels': tiendas,
+        'values': stocks,
+        'max_index': max_stock_index
+    }
+    
+    # Datos para el gráfico de top tiendas (Barras)
+    visitas = [random.randint(500, 2000) for _ in tiendas]
+    max_visitas_index = visitas.index(max(visitas))
+    
+    top_stores_data = {
+        'labels': tiendas,
+        'visitas': visitas,
+        'max_index': max_visitas_index
+    }
+
+    return render(request, 'users/estadisticas_stock.html', {
+        'user': request.user,
+        'stock_data': json.dumps(stock_data),
+        'top_stores_data': json.dumps(top_stores_data),
     })
