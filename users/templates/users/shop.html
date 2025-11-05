@@ -11,137 +11,169 @@
 body {
     margin:0;
     font-family:'Oswald', sans-serif;
-    background:#111;
-    color:#fff;
+    background:#fff;  /* Fondo blanco */
+    color:#000;       /* Texto negro */
 }
-a { text-decoration:none; color:#fff; transition:0.3s; }
+a { 
+    text-decoration:none;
+    color:#000; 
+    transition:0.3s; } 
+
 a:hover { color:#f00; }
-.container { width:90%; max-width:1200px; margin:0 auto; }
+.container {
+    width:90%;
+    max-width:1200px;
+    margin:0 auto; }
 
-/* ===== Header ===== */
-header {
-    background:#000000;
-    display:flex;
-    justify-content:center; /* centramos horizontalmente */
-    align-items:center;      /* misma altura que antes */
-    padding:20px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.5);
-    top:0;
-    z-index:1000;
-    header .logo {
-    height: auto;
-    margin-bottom: 10px;
-    width: 100px;   /* ajusta al tamaño que quieras */
-    max-width: 20%; /* opcional: no se pase del 20% del contenedor */
-    display: block;
-}
 
-}
-
-header .container {
-    display:flex;
-    flex-direction:column;   /* apila título y menú */
-    align-items:center;
-}
-
-header h1 {
-    color:#f00;
-    font-size:28px;
-    margin-bottom:10px;
-}
-
-header nav {
-    display:flex;
-    gap:25px; /* espacio entre las palabras */
-}
-
-header nav a {
-    font-weight:bold;
-    color:#fff;
-    transition:0.3s;
-}
-
-header nav a:hover {
-    color:#ff4d4d;
-}
-
-.header-right-icons {
-    position: absolute;   
-    top: 10px;            
-    right: 20px;          
+.header-top {
     display: flex;
-    gap: 15px;            
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
 }
 
-/* tamaño individual de los íconos */
-.icon-btn img.user-icon {
-    width: 40px;
+/* Contenedor derecho: barra + iconos */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* espacio entre barra y iconos */
+}
+
+/* Barra de búsqueda */
+.busqueda {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0;
+    border-radius: 25px;
+    padding: 5px 10px;
+    width: 200px;
+}
+
+.busqueda .lupa {
+    font-size: 18px;
+    margin-right: 10px;
+    color: #555;
+}
+
+.busqueda input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* Íconos */
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* espacio entre corazón y carrito */
+}
+
+.icon-heart {
+    width: 40px;   /* más grande */
     height: 40px;
 }
 
-.icon-btn img.heart-icon {
-    width: 15px;   /* un poquito más grande */
-    height: 15px;
+.icon-small {
+    width: 30px;
+    height: 30px;
 }
 
-.icon-btn img.cart-icon {
-    width: 20px;
-    height: 20px;
+.navbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* logo | menú | derecha */
+    align-items: center;
+    padding: 25px 60px;
+    position: relative;
 }
 
-.icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-}
-
-
-
-header h1 { color:#f00; font-size:28px; }
-header nav a { margin-left:25px; font-weight:bold; }
-header nav a:hover { color:#ff4d4d; }
-
+/* ==== LOGO ==== */
 .logo {
-    width: 100px;        /* tamaño inicial del logo */
-    max-width: 15%;      /* no se pase del 15% del contenedor */
-    height: auto;        /* mantiene proporción */
-    display: block;      /* evita que flote y cause problemas */
-    margin: 20px auto;   /* lo centra horizontalmente y separa un poco del borde */
+    justify-self: start;
 }
 
-@media (max-width: 768px) {
-    .logo {
-        width: 80px;     /* más pequeño en pantallas chicas */
-        max-width: 25%;  /* no se expanda demasiado */
-    }
+.logo img {
+    width: 60px;
+    height: auto;
 }
+
+/* ==== ENLACES DE MENÚ ==== */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/* ==== DERECHA: BUSCADOR + ICONOS ==== */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-self: end;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #f2f2f2;
+    border-radius: 20px;
+    padding: 5px 10px;
+    width: 200px;
+}
+
+.search-container i {
+    color: #555;
+    margin-right: 8px;
+}
+
+.search-container input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+}
+
+/* ==== ICONOS ==== */
+.icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.heart-icon {
+    width: 30px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+
+
+
 /* ===== Hero ===== */
-.hero {
-    height:500px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    background-image:url('https://images.unsplash.com/photo-1600180758895-162b0e750a11?auto=format&fit=crop&w=1400&q=80');
-    background-size:cover;
-    background-position:center;
-    position:relative;
-    overflow:hidden;
-}
-
 .fotos-jordan {
-    display: flex;               /* mantiene las fotos en línea horizontal */
+    display: flex;
     justify-content: space-around;
-    align-items: flex-end;       /* opcional, alinea la parte inferior */
+    align-items: flex-end;
     margin-top: 20px;
-    gap: 20px;                   /* espacio entre fotos */
-    flex-wrap: wrap;             /* opcional: permite que baje a la siguiente línea si la pantalla es pequeña */
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .foto-wrapper {
     width: 30%;
-    height: 700px;  /* antes era 500px, ahora más alto */
+    height: 700px;
     overflow: hidden;
     border-radius: 10px;
     position: relative;
@@ -152,8 +184,8 @@ header nav a:hover { color:#ff4d4d; }
 .foto-jordan {
     width: 100%;
     height: 100%;
-    object-fit: cover;     /* rellena el contenedor */
-    object-position: bottom; /* muestra la parte inferior de la imagen */
+    object-fit: cover;
+    object-position: bottom;
     display: block;
     transition: transform 0.3s;
 }
@@ -162,264 +194,288 @@ header nav a:hover { color:#ff4d4d; }
     transform: scale(1.05);
 }
 
+/* Ahora el texto es un link */
 .foto-texto {
     position: absolute;
-    bottom: 10px;        /* distancia desde el borde inferior */
-    left: 50%;           
-    transform: translateX(-50%); /* centra horizontalmente */
-    color: #fff;         /* color del texto */
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: 5px 10px;
-    border-radius: 5px;  /* opcional */
-    font-size: 16px;     /* ajusta según prefieras */
+    border-radius: 5px;
+    font-size: 16px;
     text-align: center;
+    background: rgba(255,255,255,0.7);
 }
 
-.hero::after {
-    content:"";
-    position:absolute;
-    top:0; left:0; right:0; bottom:0;
-    background:rgba(0,0,0,0.5);
+.foto-texto a {
+    color: #000;
+    font-weight: bold;
 }
-.hero div { position:relative; z-index:1; }
-.hero h2 {
-    font-size:48px;
-    color:#fff;
-    margin-bottom:15px;
-    animation:fadeInDown 1s ease forwards;
-}
-.hero p {
-    font-size:18px;
-    margin-bottom:20px;
-    animation:fadeInUp 1s ease forwards;
-}
-
-/* ===== Animations ===== */
-@keyframes fadeInDown {
-    0% { opacity:0; transform:translateY(-50px); }
-    100% { opacity:1; transform:translateY(0); }
-}
-@keyframes fadeInUp {
-    0% { opacity:0; transform:translateY(50px); }
-    100% { opacity:1; transform:translateY(0); }
-}
+.foto-texto a:hover { color:rgb(255, 255, 255); }
 
 /* ===== Productos ===== */
 .products {
     padding:60px 0;
     text-align:center;
 }
-.products h2 { font-size:36px; margin-bottom:50px; position:relative; display:inline-block; }
-.products h2::after {
-    content:"";
-    width:50px;
-    height:3px;
-    background:#f00;
-    display:block;
-    margin:10px auto 0;
-    border-radius:2px;
+
+/* Foto destacada */
+.foto-destacada img {
+    width: calc(100% - 40px);
+    max-height: 650px;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    margin: 0 20px;
+    border-radius: 10px;
 }
 
-.cards {
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
-    gap:30px;
-    padding:0 20px;
+/* Franja blanca con texto y botón */
+.destacado-franja {
+    background-color: #fff;  /* franja blanca */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0; /* grosor de la franja */
+    margin-bottom: 30px; /* espacio antes de las fotos de categorías */
 }
 
-.card {
-    background:#222;
-    border-radius:15px;
-    overflow:hidden;
-    transition: transform 0.4s, box-shadow 0.4s;
-    position:relative;
-}
-.card:hover {
-    transform:translateY(-10px);
-    box-shadow:0 15px 25px rgba(255,0,0,0.5);
-}
-.card img {
-    width:100%;
-    height:250px;
-    object-fit:cover;
-    transition: transform 0.5s;
-}
-.card:hover img { transform:scale(1.1); }
-.card h3 { margin:15px 0; font-size:20px; }
-.card p { color:#f00; font-weight:bold; margin-bottom:15px; font-size:18px; }
-.card .btn {
-    display:inline-block;
-    padding:12px 25px;
-    background:linear-gradient(45deg,#f00,#ff4d4d);
-    color:#fff;
-    border-radius:30px;
-    font-weight:bold;
-    transition:0.4s;
-}
-.card .btn:hover {
-    background:linear-gradient(45deg,#fff,#ddd);
-    color:#f00;
+.destacado-franja h2 {
+    font-family: "Nike Sans", Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    color: #000;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
 }
 
-/* ===== About ===== */
-.about {
-    padding:60px 20px;
-    background:#1c1c1c;
-    text-align:center;
-}
-.about h2 { font-size:36px; margin-bottom:25px; }
-.about p { max-width:800px; margin:0 auto; line-height:1.7; font-size:18px; }
-
-/* ===== FAQ ===== */
-.faq { padding:60px 20px; text-align:center; }
-.faq h2 { font-size:36px; margin-bottom:40px; }
-.faq-item {
-    background:#222;
-    padding:25px;
-    margin:15px auto;
-    max-width:800px;
-    border-radius:15px;
-    text-align:left;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-.faq-item:hover {
-    transform:translateY(-5px);
-    box-shadow:0 10px 20px rgba(255,0,0,0.5);
+.btn-destacado {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #000000; 
+    color: #fff;
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.4s;
 }
 
-/* ===== Contact ===== */
-.contact { padding:60px 20px; background:#1c1c1c; text-align:center; }
-.contact h2 { font-size:36px; margin-bottom:25px; }
-.contact form { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
-.contact input, .contact textarea {
-    padding:12px; border:none; border-radius:10px;
-    font-size:16px;
+.btn-destacado:hover {
+    background-color: #000000;
 }
-.contact button {
-    padding:12px;
-    border:none;
-    border-radius:30px;
-    background:linear-gradient(45deg,#f00,#ff4d4d);
-    color:#fff;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.4s;
-}
-.contact button:hover { background:linear-gradient(45deg,#fff,#ddd); color:#f00; }
 
-/* ===== Footer ===== */
-footer {
-    background:#1c1c1c;
-    text-align:center;
-    padding:25px;
-    box-shadow:0 -2px 5px rgba(0,0,0,0.5);
+.espacio-footer {
+    height: 50px; /* ajusta según quieras el espacio */
+    background-color: #fff; /* opcional: color del espacio */
 }
+
+/* ===== Footer ===== */ 
+.footer-full {
+    background-color: #1c1c1c;
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    padding: 50px 25px 25px 25px; 
+    width: 100%;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 60px;
+    flex-wrap: wrap;
+    width: 90%; 
+    margin-left: 60px; 
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 180px;
+}
+
+.footer-section h4 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 8px;
+}
+
+.footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.footer-section ul li a:hover {
+    opacity: 0.7;
+}
+
+.footer-bottom {
+    text-align: left;
+    border-top: 1px solid #333;
+    padding-top: 10px;
+    font-size: 11px;
+    color: #aaa;
+    margin-left: 60px; /* ✅ lo alinea con las secciones */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 20px;
+        width: calc(100% - 40px);
+    }
+
+    .footer-bottom {
+        margin-left: 20px;
+        text-align: left;
+    }
+}
+
+
+/* versión móvil */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        left: 0;
+        width: 100%;
+        padding-left: 20px;
+    }
+
+    .footer-bottom {
+        margin-left: 0;
+        text-align: left;
+        padding-left: 20px;
+    }
+}
+.icon-user {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.login-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    transition: transform 0.2s;
+}
+
+.login-icon:hover {
+    transform: scale(1.1);
+}
+
+
+
 </style>
 </head>
 <body>
 
-<!-- Header -->
-
 <header>
-    <div class="container">
-        <img src="{% static 'users/fotos/jordan.jpg' %}" alt="logo" class="logo">
-        <nav>
-            <a href="#">Lanzamientos</a>
-            <a href="#productos">Hombre</a>
-            <a href="#productos">Mujer</a>
-            <a href="#productos">Niños</a>
-            <a href="#productos">Accesorios</a>
-        </nav>
-    <div class="header-right-icons">
-        <button class="icon-btn">
-            <img src="{% static 'users/icons/1.jpg' %}" alt="Login" class="user-icon">
-        </button>
-        <button class="icon-btn">
-            <img src="{% static 'users/icons/2.jpg' %}" alt="Lista de deseos" class="heart-icon">
-        </button>
-        <button class="icon-btn">
-            <img src="{% static 'users/icons/4.jpg' %}" alt="Carrito" class="cart-icon">
-        </button>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{% static 'users/fotos/logoo.webp' %}" alt="Jordan Logo">
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/lanzamiento">Lanzamientos</a></li>
+            <li><a href="/hombre">Hombre</a></li>
+            <li><a href="/mujer">Mujer</a></li>
+            <li><a href="/infantil">Niños</a></li>
+        </ul>
+
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar...">
+            </div>
+            <img src="{% static 'users/icons/heart.png' %}" class="icon heart-icon" alt="Lista de deseos">
+            <img src="{% static 'users/icons/cart.png' %}" class="icon" alt="Carrito">
+            <a href="/login" class="login-icon">
+                <img src="{% static 'users/icons/user.jpg' %}" alt="Login" class="icon-user">
+            </a>
+        </div>
+    </div>
+</header>
+
+
+<!-- Foto destacada -->
+<div class="foto-destacada">
+    <img src="{% static 'users/fotos/nike8.webp' %}" alt="Último de Jordan">
 </div>
 
+<!-- Franja blanca con texto y botón -->
+<div class="destacado-franja">
+    <h2>LO ÚLTIMO DE JORDAN</h2>
+    <a href="/lanzamiento" class="btn-destacado">Comprar</a>
+</div>
 
-</header>
 
 <!-- Hero -->
 <div class="fotos-jordan">
     <div class="foto-wrapper">
         <img src="{% static 'users/fotos/nike5.webp' %}" alt="Nike 1" class="foto-jordan">
-        <div class="foto-texto">Hombre</div>
+        <div class="foto-texto"><a href="/hombre">Hombre</a></div>
     </div>
     <div class="foto-wrapper">
         <img src="{% static 'users/fotos/nike6.webp' %}" alt="Nike 2" class="foto-jordan">
-        <div class="foto-texto">Mujer</div>
+        <div class="foto-texto"><a href="/mujer">Mujer</a></div>
     </div>
     <div class="foto-wrapper">
         <img src="{% static 'users/fotos/nike7.webp' %}" alt="Nike 3" class="foto-jordan">
-        <div class="foto-texto">Niños</div>
+        <div class="foto-texto"><a href="/infantil">Niños</a></div>
     </div>
 </div>
 
-
-
-<!-- Productos -->
-<section id="productos" class="products">
-    <h2>Nuestros Productos</h2>
-    <div class="cards">
-        <div class="card">
-            <img src="{% static 'users/fotos/jordan1.jpeg' %}" alt="Jordan 1">
-            <h3>Air Jordan 1</h3>
-            <p>$200</p>
-            <a href="#" class="btn">Comprar</a>
-        </div>
-        <div class="card">
-            <img src="{% static 'users/fotos/jordan1.jpeg' %}" alt="Jordan 2">
-            <h3>Air Jordan 4</h3>
-            <p>$220</p>
-            <a href="#" class="btn">Comprar</a>
-        </div>
-        <div class="card">
-            <img src="{% static 'users/fotos/jordan1.jpeg' %}" alt="Jordan 3">
-            <h3>Air Jordan 11</h3>
-            <p>$250</p>
-            <a href="#" class="btn">Comprar</a>
-        </div>
-    </div>
-</section>
-
-<!-- About -->
-<section class="about">
-    <h2>Sobre Nike Jordan</h2>
-    <p>blablablablabla blabla</p>
-</section>
-
-<!-- FAQ -->
-<section class="faq">
-    <h2>Preguntas Frecuentes</h2>
-    <div class="faq-item">
-        <h3>¿Hacen envíos internacionales?</h3>
-        <p>Sbla blablabla blabla</p>
-    </div>
-    <div class="faq-item">
-        <h3>¿Se aceptan devoluciones?</h3>
-        <p>blablablablablabla</p>
-    </div>
-</section>
-
-<!-- Contact -->
-<section id="contacto" class="contact">
-    <h2>Contacto</h2>
-    <form>
-        <input type="text" placeholder="Nombre" required>
-        <input type="email" placeholder="Correo" required>
-        <textarea placeholder="Mensaje"></textarea>
-        <button type="submit">Enviar</button>
-    </form>
-</section>
+<div class="espacio-footer"></div>
 
 <!-- Footer -->
-<footer>
-    &copy; 2025 Nike Jordan. Todos los derechos reservados.
+<footer class="footer-full">
+    <div class="footer-container container">
+        <div class="footer-section">
+            <h4>AYUDA</h4>
+            <ul>
+                <li><a href="/ayuda/centro-de-ayuda">Centro de ayuda</a></li>
+                <li><a href="/ayuda/bases-legales">Bases legales</a></li>
+                <li><a href="/ayuda/guia-de-tallas">Guía de tallas</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>ACERCA DE NIKE</h4>
+            <ul>
+                <li><a href="/acerca/noticias">Noticias</a></li>
+                <li><a href="/acerca/empleos">Empleos</a></li>
+                <li><a href="/acerca/inversionistas">Inversionistas</a></li>
+                <li><a href="/acerca/sustentabilidad">Sustentabilidad</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>EVENTOS NIKE</h4>
+            <ul>
+                <li><a href="/eventos/live-shopping">Live Shopping</a></li>
+                <li><a href="/eventos/cyber-nike">Cyber Nike</a></li>
+                <li><a href="/eventos/black-friday-nike">Black Friday Nike</a></li>
+                <li><a href="/eventos/member-days">Member Days</a></li>
+                <li><a href="/eventos/run-santiago">Run Santiago</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Nike - Todos los derechos reservados.</p>
+    </div>
 </footer>
 
 </body>

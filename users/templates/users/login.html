@@ -19,14 +19,14 @@
 body {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     background-image: url("{% static 'users/fotos/nike4.webp' %}");
-    background-size: cover;       /* la imagen cubre toda la ventana */
-    background-position: center;  /* centra la imagen */
-    background-repeat: no-repeat; /* no se repite */
-    background-attachment: fixed; /* para que la imagen quede fija al hacer scroll */
+    background-size: cover;       
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-attachment: fixed; 
     display: flex;
-    justify-content: center; /* centra horizontalmente */
-    align-items: center;     /* centra verticalmente */
-    height: 100vh;           /* altura de toda la ventana */
+    justify-content: center; 
+    align-items: center;     
+    height: 100vh;           
     margin: 0;
 }
 
@@ -52,8 +52,8 @@ button {
     height: 450px;
     background-color: rgba(0, 0, 0, 0.8);
     box-shadow: 
-        0 0 20px rgba(255, 0, 0, 0.5),   /* sombra externa roja suave alrededor */
-        0 0 40px rgba(255, 0, 0, 0.3);   /* sombra más difusa */
+        0 0 20px rgba(255, 0, 0, 0.5),  
+        0 0 40px rgba(255, 0, 0, 0.3);   
     display: flex;
     flex-direction: row;
 }
@@ -126,7 +126,7 @@ button {
 }
 
 .img:after {
-    background: rgba(0,0,0,0.8); /* oscurece con opacidad */
+    background: rgba(0,0,0,0.8); 
 }
 
 
@@ -179,8 +179,8 @@ button {
     overflow: hidden;
     z-index: 2;
     position: relative;
-    width: 140px;       /* más ancho */
-    height: 45px;       /* más alto */
+    width: 140px;      
+    height: 45px;       
     margin: 0 auto;
     background: transparent;
     color: #fff;
@@ -204,7 +204,7 @@ button {
 }
 
 .img__btn span {
-    position: absolute;      /* volver a absolute para animación */
+    position: absolute;     
     left: 0;
     top: 0;
     width: 100%;
@@ -287,14 +287,14 @@ input {
 }
 
 .sign-in .submit:hover {
-    background-color: #660b0b; /* rojo Nike al hover */
+    background-color: #660b0b; 
     color: #000000;
     transform: scale(1.05);
 }
 
 .sign-in input {
-    background-color: #fff !important; /* fondo blanco */
-    color: #000 !important;            /* texto negro visible */
+    background-color: #fff !important; 
+    color: #000 !important;           
     border-bottom: 1px solid rgba(0,0,0,0.4);
     padding: 8px 12px;
     border-radius: 5px;
@@ -304,7 +304,7 @@ input {
 }
 
 .sign-in input:focus {
-    background-color: #fff;  /* se llena al escribir */
+    background-color: #fff;  
 }
 
 .cont.s--signup .sign-in {
@@ -324,14 +324,14 @@ input {
 .sign-up input {
     background-color: #fff;
     color: #000;
-    border-bottom: 1px solid rgba(0,0,0,0.4); /* mantiene la línea */
+    border-bottom: 1px solid rgba(0,0,0,0.4); 
 }
 
 /* Botón de registrarse en el formulario */
 .sign-up .submit {
-    background-color: #000;  /* fondo negro */
-    color: #fff;             /* texto blanco */
-    border-radius: 30px;     /* bordes redondeados */
+    background-color: #000;  
+    color: #fff;             
+    border-radius: 30px;     
     text-transform: uppercase;
     font-weight: bold;
     cursor: pointer;
@@ -346,8 +346,8 @@ input {
 
 /* Campos de texto del formulario Sign-Up */
 .sign-up input {
-    background-color: #fff !important; /* fondo blanco */
-    color: #000 !important;            /* texto negro visible */
+    background-color: #fff !important; 
+    color: #000 !important;        
     border-bottom: 1px solid rgba(0,0,0,0.4);
     padding: 8px 12px;
     border-radius: 5px;
@@ -359,40 +359,40 @@ input {
 /* Efecto al hacer focus en los campos */
 .sign-up input:focus {
     outline: none;
-    border-bottom: 2px solid #d4af7a; /* línea dorada al enfocar */
-    color: #000 !important;            /* asegura que el texto sigue negro */
+    border-bottom: 2px solid #d4af7a; 
+    color: #000 !important;            
 }
 
 /* Efecto al pasar el mouse */
 .sign-up .submit:hover {
-    background-color: #000;  /* cambia a rojo Nike */
-    color: #660b0b;                /* texto negro */
-    transform: scale(1.05);     /* crece un poquito */
+    background-color: #000;  
+    color: #660b0b;               
+    transform: scale(1.05);    
 }
 
 .cont h2,
 .cont label span,
 .cont input,
 .cont .forgot-pass {
-    color: #fff; /* letras blancas */
+    color: #fff; 
 }
 
 .distribuidor-text {
     text-align: center;
     margin-top: 15px;
-    color: #fff; /* blanco para que resalte sobre el fondo negro */
+    color: #fff; 
     font-size: 14px;
 }
 
 .distribuidor-text a {
-    color: #660b0b; /* rojo brillante tipo Nike */
+    color: #660b0b; 
     text-decoration: underline;
     font-weight: bold;
     cursor: pointer;
 }
 
 .distribuidor-text a:hover {
-    color: #fff; /* efecto al pasar el mouse */
+    color: #fff; 
 }
 
 

@@ -23,6 +23,18 @@ def login(request):
 def shop(request):
     return render(request, 'users/shop.html')
 
+def hombre(request):
+    return render(request, 'users/hombre.html')
+
+def mujer(request):
+    return render(request, 'users/mujer.html')
+
+def infantil(request):
+    return render(request, 'users/infantil.html')
+
+def lanzamiento(request):
+    return render(request, 'users/lanzamiento.html')
+
 @login_required
 def info(request):
     user = request.user
