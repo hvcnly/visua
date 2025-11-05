@@ -1,0 +1,334 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Distribuidor - Nike</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="{% static 'users/js/map-nike.js' %}"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initNikeMap('mapNike', "{% static 'users/data/comunas.geojson' %}");
+    });
+  </script>
+
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+
+    .navbar {
+      background-color: #000;
+      color: #fff;
+      border-bottom: 2px solid #e10600;
+    }
+
+    .navbar-brand {
+      color: #fff !important;
+      letter-spacing: 1px;
+    }
+
+    .card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      color: #000;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #e10600; /* rojo Nike */
+    }
+
+    .stat-title {
+      color: #000;
+      font-weight: 600;
+      letter-spacing: .05em;
+    }
+
+    .footer {
+      color: #444;
+      font-size: 0.9rem;
+      border-top: 1px solid #ccc;
+    }
+
+    a {
+      color: #e10600;
+      text-decoration: none;
+    }
+    a:hover {
+      color: #b80000;
+    }
+
+    .table thead {
+      background-color: #000;
+      color: #fff;
+    }
+    .table tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+    .chart-fixed{
+      position: relative;
+      height: 420px;      /* Ajusta aquí la altura deseada */
+      max-height: 420px;  /* Evita que crezca */
+      width: 100%;
+    }
+    .chart-fixed canvas{
+      height: 100% !important;
+      width: 100% !important;
+      display: block;
+    }
+
+  </style>
+</head>
+      <script>
+ 
+  // --- Donut ventas por canal ---
+  fetch("{% url 'ventas_canal_data' %}")
+    .then(r => r.json())
+    .then(({labels, values}) => {
+      const ctx = document.getElementById('canalChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: values,
+            backgroundColor: ['#000000', '#e10600', '#888888'],
+            borderColor: '#ffffff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' } },
+          cutout: '60%',
+        }
+      });
+    });
+</script>
+
+
+
+<body>
+  <!-- Barra superior -->
+  <nav class="navbar px-4 py-3">
+    <div class="d-flex justify-content-between w-100">
+      <span class="navbar-brand fw-bold text-uppercase">Nike Distribuidores</span>
+      <div>
+        <span class="me-3">👤 {{ user.username }}</span>
+        <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div class="container mt-5 mb-5">
+    <h2 class="mb-4 fw-bold text-uppercase text-center">Dashboard de Distribuidor</h2>
+
+    <!-- Métricas -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Ventas Totales</h6>
+          <div class="stat-number">${{ stats.ventas_totales|floatformat:0 }}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Pedidos Pendientes</h6>
+          <div class="stat-number">{{ stats.pedidos_pendientes }}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Clientes Activos</h6>
+          <div class="stat-number">{{ stats.clientes_activos }}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Región Asignada</h6>
+          <div class="stat-number">{{ stats.region_asignada }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+<!-- KPI variación mensual -->
+<div class="row mt-4">
+  <div class="col-md-3">
+    <div class="card text-center p-3 shadow-sm">
+      <h6 class="stat-title text-uppercase">Variación mensual</h6>
+      <div id="kpiDelta" class="stat-number d-flex justify-content-center align-items-center gap-2">
+        <span id="kpiArrow">—</span>
+        <span id="kpiPct">0%</span>
+      </div>
+      <div class="small text-muted mt-1">
+        <span>Mes actual: </span><span id="kpiActual">$0</span><br>
+        <span>Mes anterior: </span><span id="kpiAnterior">$0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Donas (izq) + Barras horizontales (der con alertas debajo) -->
+<div class="row mt-4 g-4 align-items-start">
+  <!-- Izquierda: dos donas apiladas -->
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body text-center">
+        <h5 class="card-title mb-3 text-uppercase">Ventas por Canal</h5>
+        <canvas id="canalChart" style="height:220px; max-width:100%; margin:auto;"></canvas>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body text-center">
+        <h5 class="card-title mb-3 text-uppercase">Distribución de Género</h5>
+        <canvas id="genderChart" style="height:220px; max-width:100%; margin:auto;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Derecha: gráfico horizontal + alertas debajo -->
+  <div class="col-lg-8 d-flex flex-column gap-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3 text-uppercase">Top 5 Productos</h5>
+        <div class="chart-fixed">
+          <canvas id="topProductsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alertas de Stock ahora debajo del gráfico -->
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3 text-uppercase">Alertas de Stock Crítico</h5>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered align-middle">
+            <thead>
+              <tr><th>SKU</th><th>Producto</th><th>Tienda</th><th class="text-end">Stock</th></tr>
+            </thead>
+            <tbody id="tbStockCritico"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Mapa -->
+    <div class="card mt-5 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3 text-uppercase">Mapa: Ventas por Comuna (RM)</h5>
+        <div id="mapNike" style="height:430px; border-radius:12px; overflow:hidden;"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer text-center mt-5 py-3">
+    <p>© 2025 Nike Distribuidores — Panel Interno</p>
+  </footer>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Gráfico de dona (negro y rojo) -->
+  <script>
+  fetch("{% url 'genero_data' %}")
+    .then(response => response.json())
+    .then(data => {
+      const mujeres = data.mujeres;
+      const hombres = data.hombres;
+
+      const ctx = document.getElementById('genderChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Mujeres', 'Hombres'],
+          datasets: [{
+            data: [mujeres, hombres],
+            backgroundColor: ['#e10600', '#000000'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' } },
+          cutout: '60%',
+        }
+      });
+    });
+  </script>
+
+ <script>
+  function destroyIfExists(id){
+    const el = document.getElementById(id);
+    const inst = el ? Chart.getChart(el) : null;
+    if (inst) inst.destroy();
+  }
+
+  fetch("{% url 'top_productos_data' %}")
+    .then(r => r.json())
+    .then(({labels, values}) => {
+      destroyIfExists('topProductsChart');
+      new Chart(document.getElementById('topProductsChart'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Unidades',
+            data: values,
+            backgroundColor: '#000000',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',                 // horizontal
+          responsive: true,
+          maintainAspectRatio: false,     // usa la altura del contenedor (.chart-fixed)
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, grid: { drawBorder: false } },
+            y: { ticks: { autoSkip: false }, grid: { display: false } }
+          }
+        }
+      });
+    });
+</script>
+
+
+  <!-- Tabla stock crítico -->
+  <script>
+  fetch("{% url 'stock_critico_data' %}")
+    .then(r => r.json())
+    .then(({rows}) => {
+      const tb = document.getElementById('tbStockCritico');
+      tb.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.sku}</td>
+          <td>${r.producto}</td>
+          <td>${r.tienda}</td>
+          <td class="text-end"><span class="badge bg-danger">${r.stock}</span></td>
+        </tr>`).join('');
+    });
+  </script>
+</body>
+</html>
+
