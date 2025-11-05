@@ -8,7 +8,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils.timezone import now
@@ -17,19 +17,27 @@ from django.contrib.auth import logout as auth_logout
 
 
 # --- Login normal ---
-def login(request):
+def login_view(request):
+    print("DEBUG: Entrando a login_view")
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
+        next_url = request.POST.get('next', '/users/info/')
+        
+        print(f"DEBUG: Usuario: {username}, Next: {next_url}")
+        
         user = authenticate(request, username=username, password=password)
-
+        print(f"DEBUG: Usuario autenticado: {user}")
+        
         if user is not None:
-            auth_login(request, user)
-            return redirect('info')
+            login(request, user)
+            print(f"DEBUG: Login exitoso, redirigiendo a: {next_url}")
+            return redirect(next_url)
         else:
+            print("DEBUG: Credenciales inválidas")
             messages.error(request, 'Usuario o contraseña incorrectos')
-
+    
     return render(request, 'users/login.html')
 
 
@@ -119,7 +127,7 @@ def admin_login(request):
         password = request.POST.get('password','')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            auth_login(request, user)
+            login(request, user)
             return redirect('distribuidor_home')   # <- NOMBRE DE RUTA, no .html
         messages.error(request, 'Usuario o contraseña incorrectos')
     return render(request, 'users/admlogin.html')  # <- render plantilla
