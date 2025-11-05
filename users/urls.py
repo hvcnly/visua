@@ -1,8 +1,8 @@
 from django.urls import path
 from . import views
 
-
 urlpatterns = [
+    path('', views.shop, name='home'),
     path('shop/', views.shop, name='shop'),
     path('info/', views.info, name='info'),  
     path('login/', views.login, name='login'),
@@ -12,5 +12,10 @@ urlpatterns = [
     path('comuna_data/', views.comuna_data, name='comuna_data'),
     path('api/stock-critico/', views.stock_critico_data, name='stock_critico_data'),
     path('api/top-productos/', views.top_productos_data, name='top_productos_data'),
+    path('hombre/', views.hombre, name='hombre'),
+    path('mujer/', views.mujer, name='mujer'),
+    path('infantil/', views.infantil, name='infantil'),
+    path('lanzamiento/', views.lanzamiento, name='lanzamiento'),
+    path('estadisticas-stock/', views.estadisticas_stock, name='estadisticas_stock'),
+    path('admin/', views.admin_login, name='admin_login'), 
 ]
-

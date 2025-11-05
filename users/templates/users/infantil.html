@@ -1,0 +1,381 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapatillas para Hombres</title>
+
+<style>
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        margin: 0;
+        background-color: #fff;
+    }
+
+    /* ==== HEADER ==== */
+    header {
+        width: 100%;
+        background-color: #fff;
+        border-bottom: 1px solid #e6e6e6;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .navbar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 15px 60px;
+    }
+
+    .logo {
+    justify-self: start;
+    }
+
+    .header-right {
+        justify-self: end;
+    }
+
+    .nav-links {
+        justify-content: center;
+    }
+
+    .logo img {
+        width: 60px;
+        height: auto;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 40px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links li a {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        font-size: 15px;
+        transition: color 0.3s;
+    }
+
+    .nav-links li a:hover {
+        color: #888;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background-color: #f2f2f2;
+        border-radius: 20px;
+        padding: 5px 10px;
+        width: 200px;
+    }
+
+    .search-container i {
+        color: #555;
+        margin-right: 8px;
+    }
+
+    .search-container input {
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+    }
+
+    .person-icon {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        display: inline-block;
+        transform: translateY(2px);
+    }
+
+
+    .person-icon:hover {
+        transform: scale(1.1);
+    }
+
+    .btn-destacado {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #000000; 
+        color: #fff;
+        border-radius: 30px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: 0.4s;
+    }
+
+    .btn-destacado:hover {
+        background-color: #000000;
+    }
+
+    .destacado-franja {
+    background-color: #fff;  /* franja blanca */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0; /* grosor de la franja */
+    margin-bottom: 30px; /* espacio antes de las fotos de categorías */
+    }
+
+    .destacado-franja h2 {
+        font-family: "Nike Sans", Arial, Helvetica, sans-serif;
+        font-size: 30px;
+        color: #000;
+        margin-bottom: 15px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* ==== PRODUCTOS ==== */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 40px;
+        padding: 60px;
+    }
+
+    .product-card {
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .product-card img {
+        width: 100%;
+        border-radius: 12px;
+        background-color: #f8f8f8;
+    }
+
+    .product-info {
+        margin-top: 10px;
+    }
+
+    .product-info h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #000;
+    }
+
+    .product-info p {
+        color: #555;
+        margin: 5px 0;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer-full {
+        background-color: #1c1c1c;
+        color: #fff;
+        font-family: 'Oswald', sans-serif;
+        font-size: 13px;
+        padding: 50px 25px 25px 25px;
+        width: 100%;
+    }
+
+    .footer-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 60px;
+        flex-wrap: wrap;
+        width: 90%;
+        margin-left: 60px;
+    }
+
+    .footer-section {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .footer-section h4 {
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .footer-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-section ul li {
+        margin-bottom: 8px;
+    }
+
+    .footer-section ul li a {
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.3s;
+    }
+
+    .footer-section ul li a:hover {
+        opacity: 0.7;
+    }
+
+    .footer-bottom {
+        text-align: left;
+        border-top: 1px solid #333;
+        padding-top: 10px;
+        font-size: 11px;
+        color: #aaa;
+        margin-left: 60px;
+    }
+</style>
+
+</head>
+
+<body>
+<header>
+    <div class="navbar">
+        <div class="logo">
+            <a href="/shop">
+                <img src="{% static 'users/fotos/logoo.webp' %}" alt="Jordan Logo">
+            </a>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/lanzamiento">Lanzamientos</a></li>
+            <li><a href="/hombre">Hombre</a></li>
+            <li><a href="/mujer">Mujer</a></li>
+            <li><a href="/infantil">Niños</a></li>
+        </ul>
+
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar...">
+            </div>
+            <img src="{% static 'users/icons/heart.png' %}" class="icon" alt="Lista de deseos">
+            <img src="{% static 'users/icons/cart.png' %}" class="icon" alt="Carrito">
+            <a href="/users/login">
+                <img src="{% static 'users/icons/user.jpg' %}" class="person-icon" alt="Usuario">
+            </a>
+        </div>
+    </div> <!-- /.navbar -->
+</header>
+
+
+<div class="destacado-franja">
+    <h2>NIÑOS</h2>
+</div>
+
+
+<main>
+
+<div class="product-grid">
+    <div class="product-card">
+        <img src="{% static 'users/fotos/infantil/jordan 1 low alt.webp' %}" alt="Zapatilla Jordan 1 Mid">
+        <div class="product-info">
+            <h3>Jordan 1 Low Alt</h3>
+            <p>$59.990</p>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <img src="{% static 'users/fotos/infantil/jordan cmft era.jpeg' %}" alt="Zapatilla Jordan Delta 3">
+        <div class="product-info">
+            <h3>Jordan CMFT Era</h3>
+            <p>$59.990</p>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <img src="{% static 'users/fotos/infantil/jordan max aura 7.jpeg' %}" alt="Zapatilla Jordan Delta 3">
+        <div class="product-info">
+            <h3>Jordan Max Aura 7</h3>
+            <p>$76.990</p>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <img src="{% static 'users/fotos/infantil/jordan max aura 7 2.jpeg' %}" alt="Zapatilla Jordan Delta 3">
+        <div class="product-info">
+            <h3>Jordan Max Aura 7</h3>
+            <p>$76.990</p>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <img src="{% static 'users/fotos/infantil/jordan spizike low.jpeg' %}" alt="Zapatilla Jordan Delta 3">
+        <div class="product-info">
+            <h3>Jordan Spizike Low</h3>
+            <p>$59.990</p>
+        </div>
+    </div>
+    
+    <div class="product-card">
+        <img src="{% static 'users/fotos/infantil/jordan spizike low td.webp' %}" alt="Zapatilla Jordan Delta 3">
+        <div class="product-info">
+            <h3>Jordan Spizike Low (TD)</h3>
+            <p>$64.990</p>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<footer class="footer-full">
+    <div class="footer-container container">
+        <div class="footer-section">
+            <h4>AYUDA</h4>
+            <ul>
+                <li><a href="/ayuda/centro-de-ayuda">Centro de ayuda</a></li>
+                <li><a href="/ayuda/bases-legales">Bases legales</a></li>
+                <li><a href="/ayuda/guia-de-tallas">Guía de tallas</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>ACERCA DE NIKE</h4>
+            <ul>
+                <li><a href="/acerca/noticias">Noticias</a></li>
+                <li><a href="/acerca/empleos">Empleos</a></li>
+                <li><a href="/acerca/inversionistas">Inversionistas</a></li>
+                <li><a href="/acerca/sustentabilidad">Sustentabilidad</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>EVENTOS NIKE</h4>
+            <ul>
+                <li><a href="/eventos/live-shopping">Live Shopping</a></li>
+                <li><a href="/eventos/cyber-nike">Cyber Nike</a></li>
+                <li><a href="/eventos/black-friday-nike">Black Friday Nike</a></li>
+                <li><a href="/eventos/member-days">Member Days</a></li>
+                <li><a href="/eventos/run-santiago">Run Santiago</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Nike - Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas de Stock - Nike Jordan</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --nike-black: #111111;
+            --nike-white: #ffffff;
+            --nike-gray: #f5f5f5;
+            --nike-dark-gray: #757575;
+            --nike-red: #e4002b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--nike-gray);
+            color: var(--nike-black);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--nike-black);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--nike-dark-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--nike-black);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: 15px;
+        }
+
+        .logout-btn:hover {
+            background-color: #333333;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--nike-dark-gray);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-right: 15px;
+        }
+
+        .back-btn:hover {
+            background-color: #555555;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--nike-dark-gray);
+            font-size: 18px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background-color: var(--nike-white);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-header h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .chart-header p {
+            color: var(--nike-dark-gray);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container:hover .chart-wrapper {
+            transform: scale(1.05);
+        }
+
+        .highlight-info {
+            background-color: var(--nike-gray);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            border-left: 4px solid var(--nike-red);
+            display: none;
+        }
+
+        .highlight-info.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .highlight-title {
+            font-weight: bold;
+            color: var(--nike-black);
+            margin-bottom: 5px;
+        }
+
+        .highlight-detail {
+            color: var(--nike-dark-gray);
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--nike-dark-gray);
+            font-size: 14px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">NIKE JORDAN</div>
+            <div class="user-info">
+                <div class="user-avatar">{{ user.username|first|upper }}</div>
+                <div>{{ user.username }}</div>
+                <a href="{% url 'info' %}" class="back-btn">Volver al Dashboard</a>
+                <a href="{% url 'login' %}" class="logout-btn">Cerrar sesión</a>
+            </div>
+        </header>
+        
+        <section class="page-title">
+            <h1>Estadísticas de Stock</h1>
+            <p>Análisis completo del inventario en tiendas Nike Santiago</p>
+        </section>
+        
+        <div class="charts-grid">
+            <!-- Gráfico 1: Distribución de Stock -->
+            <div class="chart-container" id="chart1-container">
+                <div class="chart-header">
+                    <h2>Distribución de Stock</h2>
+                    <p>Porcentaje de inventario por tienda</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="stockChart"></canvas>
+                </div>
+                <div class="highlight-info" id="chart1-highlight">
+                    <div class="highlight-title" id="chart1-title">Tienda con Mayor Stock</div>
+                    <div class="highlight-detail" id="chart1-detail"></div>
+                </div>
+            </div>
+            
+            <!-- Gráfico 2: Top Tiendas -->
+            <div class="chart-container" id="chart2-container">
+                <div class="chart-header">
+                    <h2>Top Tiendas</h2>
+                    <p>Rendimiento por ubicación</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="topStoresChart"></canvas>
+                </div>
+                <div class="highlight-info" id="chart2-highlight">
+                    <div class="highlight-title" id="chart2-title">Tienda Más Visitada</div>
+                    <div class="highlight-detail" id="chart2-detail"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 Nike Jordan. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Datos desde Django (simulados en el template)
+        const stockData = JSON.parse('{{ stock_data|safe }}');
+        const topStoresData = JSON.parse('{{ top_stores_data|safe }}');
+
+        // Generar colores para el gráfico 1 - Mayor stock en rojo
+        const stockColors = stockData.labels.map((_, index) => 
+            index === stockData.max_index ? '#e4002b' : '#111111'
+        );
+
+        // Gráfico 1: Doughnut - Distribución de Stock
+        const stockCtx = document.getElementById('stockChart').getContext('2d');
+        const stockChart = new Chart(stockCtx, {
+            type: 'doughnut',
+            data: {
+                labels: stockData.labels,
+                datasets: [{
+                    data: stockData.values,
+                    backgroundColor: stockColors,
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} unidades (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        // Generar colores para el gráfico 2 - Tienda más visitada en rojo
+        const topStoresColors = topStoresData.labels.map((_, index) => 
+            index === topStoresData.max_index ? '#e4002b' : '#111111'
+        );
+
+        // Gráfico 2: Barras - Top Tiendas
+        const topStoresCtx = document.getElementById('topStoresChart').getContext('2d');
+        const topStoresChart = new Chart(topStoresCtx, {
+            type: 'bar',
+            data: {
+                labels: topStoresData.labels,
+                datasets: [{
+                    label: 'Visitas',
+                    data: topStoresData.visitas,
+                    backgroundColor: topStoresColors,
+                    borderColor: topStoresColors,
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Visitas: ${context.parsed.y}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Visitas'
+                        },
+                        grid: {
+                            color: '#f0f0f0'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Funcionalidad hover para Gráfico 1
+        document.getElementById('chart1-container').addEventListener('mouseenter', function() {
+            const maxStock = Math.max(...stockData.values);
+            const maxIndex = stockData.values.indexOf(maxStock);
+            const tiendaMaxStock = stockData.labels[maxIndex];
+            
+            document.getElementById('chart1-title').textContent = 'Tienda con Mayor Stock';
+            document.getElementById('chart1-detail').textContent = 
+                `${tiendaMaxStock}: ${maxStock} unidades (${Math.round((maxStock / stockData.values.reduce((a, b) => a + b, 0)) * 100)}% del total)`;
+            document.getElementById('chart1-highlight').classList.add('show');
+        });
+
+        document.getElementById('chart1-container').addEventListener('mouseleave', function() {
+            document.getElementById('chart1-highlight').classList.remove('show');
+        });
+
+        // Funcionalidad hover para Gráfico 2
+        document.getElementById('chart2-container').addEventListener('mouseenter', function() {
+            const maxVisitas = Math.max(...topStoresData.visitas);
+            const maxIndex = topStoresData.visitas.indexOf(maxVisitas);
+            const tiendaMasVisitada = topStoresData.labels[maxIndex];
+            
+            document.getElementById('chart2-title').textContent = 'Tienda Más Visitada';
+            document.getElementById('chart2-detail').textContent = 
+                `${tiendaMasVisitada}: ${maxVisitas} visitas esta semana`;
+            document.getElementById('chart2-highlight').classList.add('show');
+        });
+
+        document.getElementById('chart2-container').addEventListener('mouseleave', function() {
+            document.getElementById('chart2-highlight').classList.remove('show');
+        });
+    </script>
+</body>
+</html>
