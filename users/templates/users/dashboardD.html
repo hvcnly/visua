@@ -1,0 +1,269 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Distribuidor - Nike</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="{% static 'users/js/map-nike.js' %}"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initNikeMap('mapNike', "{% static 'users/data/comunas.geojson' %}");
+    });
+  </script>
+
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+
+    .navbar {
+      background-color: #000;
+      color: #fff;
+      border-bottom: 2px solid #e10600;
+    }
+
+    .navbar-brand {
+      color: #fff !important;
+      letter-spacing: 1px;
+    }
+
+    .card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      color: #000;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #e10600; /* rojo Nike */
+    }
+
+    .stat-title {
+      color: #000;
+      font-weight: 600;
+      letter-spacing: .05em;
+    }
+
+    .footer {
+      color: #444;
+      font-size: 0.9rem;
+      border-top: 1px solid #ccc;
+    }
+
+    a {
+      color: #e10600;
+      text-decoration: none;
+    }
+    a:hover {
+      color: #b80000;
+    }
+
+    .table thead {
+      background-color: #000;
+      color: #fff;
+    }
+    .table tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Barra superior -->
+  <nav class="navbar px-4 py-3">
+    <div class="d-flex justify-content-between w-100">
+      <span class="navbar-brand fw-bold text-uppercase">Nike Distribuidores</span>
+      <div>
+        <span class="me-3">👤 {{ user.username }}</span>
+        <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div class="container mt-5 mb-5">
+    <h2 class="mb-4 fw-bold text-uppercase text-center">Dashboard de Distribuidor</h2>
+
+    <!-- Métricas -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Ventas Totales</h6>
+          <div class="stat-number">${{ stats.ventas_totales|floatformat:0 }}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Pedidos Pendientes</h6>
+          <div class="stat-number">{{ stats.pedidos_pendientes }}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Clientes Activos</h6>
+          <div class="stat-number">{{ stats.clientes_activos }}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-center p-3 shadow-sm">
+          <h6 class="stat-title text-uppercase">Región Asignada</h6>
+          <div class="stat-number">{{ stats.region_asignada }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row mt-4">
+      <!-- Gráfico de ventas -->
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title mb-3 text-uppercase">Gráfico de Ventas</h5>
+            <img src="data:image/png;base64,{{ grafico_ventas }}" class="img-fluid rounded shadow">
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico de dona -->
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title mb-3 text-uppercase">Distribución de Género</h5>
+            <canvas id="genderChart" style="max-width:250px; margin:auto;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfico de productos -->
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title mb-3 text-uppercase">Top 5 Productos</h5>
+            <canvas id="topProductsChart" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de stock crítico -->
+    <div class="card mt-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3 text-uppercase">Alertas de Stock Crítico</h5>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered align-middle">
+            <thead>
+              <tr><th>SKU</th><th>Producto</th><th>Tienda</th><th class="text-end">Stock</th></tr>
+            </thead>
+            <tbody id="tbStockCritico"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mapa -->
+    <div class="card mt-5 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3 text-uppercase">Mapa: Ventas por Comuna (RM)</h5>
+        <div id="mapNike" style="height:430px; border-radius:12px; overflow:hidden;"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer text-center mt-5 py-3">
+    <p>© 2025 Nike Distribuidores — Panel Interno</p>
+  </footer>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Gráfico de dona (negro y rojo) -->
+  <script>
+  fetch("{% url 'genero_data' %}")
+    .then(response => response.json())
+    .then(data => {
+      const mujeres = data.mujeres;
+      const hombres = data.hombres;
+
+      const ctx = document.getElementById('genderChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Mujeres', 'Hombres'],
+          datasets: [{
+            data: [mujeres, hombres],
+            backgroundColor: ['#e10600', '#000000'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' } },
+          cutout: '60%',
+        }
+      });
+    });
+  </script>
+
+  <!-- Gráfico de barras (negro) -->
+  <script>
+  fetch("{% url 'top_productos_data' %}")
+    .then(r => r.json())
+    .then(({labels, values}) => {
+      new Chart(document.getElementById('topProductsChart'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Unidades',
+            data: values,
+            backgroundColor: '#000000'
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: '#ddd' } },
+            y: { grid: { color: '#eee' } }
+          }
+        }
+      });
+    });
+  </script>
+
+  <!-- Tabla stock crítico -->
+  <script>
+  fetch("{% url 'stock_critico_data' %}")
+    .then(r => r.json())
+    .then(({rows}) => {
+      const tb = document.getElementById('tbStockCritico');
+      tb.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.sku}</td>
+          <td>${r.producto}</td>
+          <td>${r.tienda}</td>
+          <td class="text-end"><span class="badge bg-danger">${r.stock}</span></td>
+        </tr>`).join('');
+    });
+  </script>
+</body>
+</html>
+
