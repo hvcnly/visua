@@ -1,7 +1,10 @@
 import random
 import matplotlib
 matplotlib.use('Agg')  
+
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -10,18 +13,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.utils.timezone import now
 from django.conf import settings
-
-
-
-# --- Vista de login para administrador (tu cambio) ---
-def admin_login(request):
-    """
-    Vista personalizada para el login del administrador.
-    Si el usuario ya está autenticado y es staff, lo redirige al panel admin.
-    """
-    if request.user.is_authenticated and request.user.is_staff:
-        return redirect('admin:index')
-    return render(request, 'users/admlogin.html')
+from django.contrib.auth import logout as auth_logout
 
 
 # --- Login normal ---
@@ -120,23 +112,17 @@ def estadisticas_stock(request):
         'stock_data': json.dumps(stock_data),
         'top_stores_data': json.dumps(top_stores_data),
     })
-def distribuidor_login(request):
-    # MISMO flujo que el login normal, pero con su propio template
+
+def admin_login(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get('username','').strip()
+        password = request.POST.get('password','')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            # (Opcional) verificar grupo "Distribuidores"
-            # if not user.groups.filter(name='Distribuidores').exists():
-            #     messages.error(request, 'No tienes permiso de distribuidor.')
-            #     return redirect('login')
             auth_login(request, user)
-            return redirect('distribuidor_home')  # o a una vista específica: 'distribuidor_home'
-        else:
-            messages.error(request, 'Usuario o contraseña incorrectos')
-    return render(request, 'users/distribuidor.html')  # <- ruta correcta
-
+            return redirect('distribuidor_home')   # <- NOMBRE DE RUTA, no .html
+        messages.error(request, 'Usuario o contraseña incorrectos')
+    return render(request, 'users/admlogin.html')  # <- render plantilla
 
 @login_required
 def distribuidor_home(request):
@@ -149,29 +135,12 @@ def distribuidor_home(request):
         'region_asignada': random.choice(['RM', 'Valparaíso', 'Biobío', 'Antofagasta']),
     }
 
-    meses = ['Jul', 'Ago', 'Sep', 'Oct', 'Nov']
-    ventas = [random.randint(500000, 1200000) for _ in meses]
-
-    plt.figure(figsize=(6, 3))
-    plt.plot(meses, ventas, marker='o', color='#f5f5f5')
-    plt.title('Ventas mensuales simuladas', color='white')
-    plt.xlabel('Mes', color='white')
-    plt.ylabel('Ventas (CLP)', color='white')
-    plt.grid(True, linestyle='--', alpha=0.3)
-    plt.gca().set_facecolor('#111')
-    plt.gcf().patch.set_facecolor('#111')
-    plt.tick_params(colors='white')
-
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight', facecolor='#111')
-    buffer.seek(0)
-    grafico_ventas = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    plt.close()
+    
 
     return render(request, 'users/dashboardD.html', {
         'user': user,
         'stats': stats,
-        'grafico_ventas': grafico_ventas,
+
     })
 
 def genero_data(request):
@@ -214,6 +183,11 @@ def comuna_data(request):
     
     return JsonResponse(comuna_data, safe=False)
 
+def logout_view(request):
+    auth_logout(request)
+    # Si el panel es sólo para distribuidores, vuelve al login de distribuidores
+    return redirect('admlogin')
+
 @login_required
 def top_productos_data(request):
     # Simulado: cambia por tus queries
@@ -236,3 +210,34 @@ def stock_critico_data(request):
       {"sku":"NK-METCON","producto":"Metcon 9","tienda":"Parque Arauco","stock":18},
     ]
     return JsonResponse({"rows":items})
+
+@login_required(login_url='admlogin')
+def kpi_variacion_data(request):
+    """
+    Devuelve el valor del mes actual, el anterior y la variación porcentual.
+    Cambia esta simulación por tu query real.
+    """
+    actual = random.randint(800_000, 1_400_000)
+    anterior = random.randint(700_000, 1_300_000)
+    delta_pct = 0.0 if anterior == 0 else (actual - anterior) * 100.0 / anterior
+    return JsonResponse({
+        "actual": actual,
+        "anterior": anterior,
+        "delta_pct": delta_pct
+    })
+
+
+# --- Ventas por canal (donut: web/tienda/marketplace) ---
+@login_required(login_url='admlogin')
+def ventas_canal_data(request):
+    """
+    Distribución por canal para el donut.
+    Ajusta los números a tu realidad o reemplaza por una query.
+    """
+    web = random.randint(300_000, 800_000)
+    tienda = random.randint(300_000, 800_000)
+    marketplace = random.randint(150_000, 500_000)
+    return JsonResponse({
+        "labels": ["Web", "Tienda", "Marketplace"],
+        "values": [web, tienda, marketplace]
+    })

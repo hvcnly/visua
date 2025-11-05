@@ -82,8 +82,47 @@
     .table tbody tr:hover {
       background-color: #f5f5f5;
     }
+    .chart-fixed{
+      position: relative;
+      height: 420px;      /* Ajusta aquí la altura deseada */
+      max-height: 420px;  /* Evita que crezca */
+      width: 100%;
+    }
+    .chart-fixed canvas{
+      height: 100% !important;
+      width: 100% !important;
+      display: block;
+    }
+
   </style>
 </head>
+      <script>
+ 
+  // --- Donut ventas por canal ---
+  fetch("{% url 'ventas_canal_data' %}")
+    .then(r => r.json())
+    .then(({labels, values}) => {
+      const ctx = document.getElementById('canalChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: values,
+            backgroundColor: ['#000000', '#e10600', '#888888'],
+            borderColor: '#ffffff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' } },
+          cutout: '60%',
+        }
+      });
+    });
+</script>
+
+
 
 <body>
   <!-- Barra superior -->
@@ -130,42 +169,55 @@
     </div>
 
     <!-- Gráficos -->
-    <div class="row mt-4">
-      <!-- Gráfico de ventas -->
-      <div class="col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title mb-3 text-uppercase">Gráfico de Ventas</h5>
-            <img src="data:image/png;base64,{{ grafico_ventas }}" class="img-fluid rounded shadow">
-          </div>
-        </div>
+<!-- KPI variación mensual -->
+<div class="row mt-4">
+  <div class="col-md-3">
+    <div class="card text-center p-3 shadow-sm">
+      <h6 class="stat-title text-uppercase">Variación mensual</h6>
+      <div id="kpiDelta" class="stat-number d-flex justify-content-center align-items-center gap-2">
+        <span id="kpiArrow">—</span>
+        <span id="kpiPct">0%</span>
       </div>
+      <div class="small text-muted mt-1">
+        <span>Mes actual: </span><span id="kpiActual">$0</span><br>
+        <span>Mes anterior: </span><span id="kpiAnterior">$0</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <!-- Gráfico de dona -->
-      <div class="col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body text-center">
-            <h5 class="card-title mb-3 text-uppercase">Distribución de Género</h5>
-            <canvas id="genderChart" style="max-width:250px; margin:auto;"></canvas>
-          </div>
+<!-- Donas (izq) + Barras horizontales (der con alertas debajo) -->
+<div class="row mt-4 g-4 align-items-start">
+  <!-- Izquierda: dos donas apiladas -->
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body text-center">
+        <h5 class="card-title mb-3 text-uppercase">Ventas por Canal</h5>
+        <canvas id="canalChart" style="height:220px; max-width:100%; margin:auto;"></canvas>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body text-center">
+        <h5 class="card-title mb-3 text-uppercase">Distribución de Género</h5>
+        <canvas id="genderChart" style="height:220px; max-width:100%; margin:auto;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Derecha: gráfico horizontal + alertas debajo -->
+  <div class="col-lg-8 d-flex flex-column gap-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3 text-uppercase">Top 5 Productos</h5>
+        <div class="chart-fixed">
+          <canvas id="topProductsChart"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- Gráfico de productos -->
-    <div class="row mt-4">
-      <div class="col-md-12">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title mb-3 text-uppercase">Top 5 Productos</h5>
-            <canvas id="topProductsChart" height="200"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabla de stock crítico -->
-    <div class="card mt-4 shadow-sm">
+    <!-- Alertas de Stock ahora debajo del gráfico -->
+    <div class="card shadow-sm">
       <div class="card-body">
         <h5 class="card-title mb-3 text-uppercase">Alertas de Stock Crítico</h5>
         <div class="table-responsive">
@@ -178,6 +230,8 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- Mapa -->
     <div class="card mt-5 shadow-sm">
@@ -223,11 +277,17 @@
     });
   </script>
 
-  <!-- Gráfico de barras (negro) -->
-  <script>
+ <script>
+  function destroyIfExists(id){
+    const el = document.getElementById(id);
+    const inst = el ? Chart.getChart(el) : null;
+    if (inst) inst.destroy();
+  }
+
   fetch("{% url 'top_productos_data' %}")
     .then(r => r.json())
     .then(({labels, values}) => {
+      destroyIfExists('topProductsChart');
       new Chart(document.getElementById('topProductsChart'), {
         type: 'bar',
         data: {
@@ -235,19 +295,24 @@
           datasets: [{
             label: 'Unidades',
             data: values,
-            backgroundColor: '#000000'
+            backgroundColor: '#000000',
+            borderWidth: 1
           }]
         },
         options: {
+          indexAxis: 'y',                 // horizontal
+          responsive: true,
+          maintainAspectRatio: false,     // usa la altura del contenedor (.chart-fixed)
           plugins: { legend: { display: false } },
           scales: {
-            x: { grid: { color: '#ddd' } },
-            y: { grid: { color: '#eee' } }
+            x: { beginAtZero: true, grid: { drawBorder: false } },
+            y: { ticks: { autoSkip: false }, grid: { display: false } }
           }
         }
       });
     });
-  </script>
+</script>
+
 
   <!-- Tabla stock crítico -->
   <script>
